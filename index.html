@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#45466f">
+<meta name="description" content="勉強時間、小学6年生クイズ、ごほうびをまとめた勉強アプリ">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<title>STUDY NOTE</title>
+<style>
+:root{--ink:#282943;--muted:#77788e;--paper:#f6f5fb;--card:#fff;--purple:#6567a8;--lav:#e9e8ff;--pink:#ffe8f0;--mint:#e2f7ed;--line:#e8e7f0}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif}
+header{padding:24px 18px 16px;background:linear-gradient(135deg,#45466f,#7779bb);color:#fff;border-radius:0 0 25px 25px}
+.topline{display:flex;justify-content:space-between;align-items:center}.brand{font-size:12px;letter-spacing:2px;font-weight:800;opacity:.9}.date{font-size:12px;opacity:.85}
+h1{font-size:25px;margin:12px 0 5px}header p{font-size:13px;margin:0;opacity:.9}
+main{max-width:650px;margin:auto;padding:14px 14px 100px}.tabs{position:fixed;z-index:5;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 3px calc(9px + env(safe-area-inset-bottom))}
+.tabs button{border:0;background:none;color:var(--muted);font-size:11px;padding:5px;min-width:54px}.tabs button span{display:block;font-size:20px;margin-bottom:2px}.tabs button.active{color:var(--purple);font-weight:800}
+.page{display:none}.page.active{display:block}.section-title{font-size:17px;font-weight:800;margin:20px 2px 10px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 3px 12px #28294308}
+.row{display:flex;gap:10px;align-items:center}.between{justify-content:space-between}.muted{color:var(--muted);font-size:13px}.big{font-size:30px;font-weight:850;letter-spacing:-1px}.pill{background:var(--lav);border-radius:30px;padding:6px 10px;font-size:12px;font-weight:750;color:#55578f}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px 9px}.stat b{font-size:20px;display:block}.stat small{font-size:11px;color:var(--muted)}
+button,input,select{font:inherit}button{cursor:pointer}.primary,.secondary,.danger{border:0;border-radius:12px;padding:12px 14px;font-weight:800}.primary{background:var(--purple);color:white}.secondary{background:var(--lav);color:#494b83}.danger{background:#fff0f0;color:#a44}.full{width:100%}.smallbtn{padding:8px 10px;font-size:12px}.timer-face{text-align:center;padding:16px 0}.timer-time{font-size:48px;font-weight:850;letter-spacing:-2px}.timer-ring{width:185px;height:185px;border-radius:50%;border:9px solid #e5e4f7;margin:8px auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 7px #f8f7ff}
+input[type=text]{width:100%;border:1px solid var(--line);background:#fbfbfe;border-radius:11px;padding:12px;outline-color:var(--purple)}.task{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.task:last-child{border:0}.task input{width:19px;height:19px;accent-color:var(--purple)}.done{text-decoration:line-through;color:#999}.question{font-size:18px;line-height:1.6;font-weight:800}.option{width:100%;text-align:left;background:#fbfaff;border:1px solid var(--line);padding:13px;border-radius:12px;margin:5px 0;color:var(--ink)}.option.correct{border-color:#4baf84;background:#e5f8ef}.option.wrong{border-color:#df7a85;background:#fff0f2}.feedback{padding:12px;border-radius:12px;background:#f1f0ff;font-size:13px;line-height:1.6;margin-top:10px}.reward-box{background:linear-gradient(135deg,#fff0f6,#f0efff);text-align:center;padding:24px}.gift{font-size:60px}.history-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.history-item:last-child{border:0}.empty{color:var(--muted);font-size:13px;padding:12px 0}.tiny{font-size:11px;color:var(--muted)}.progress{height:9px;background:#ecebf6;border-radius:99px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,#8587d1,#ef9bb9);width:0%}
+</style>
+</head>
+<body>
+<header><div class="topline"><div class="brand">✦ STUDY NOTE</div><div class="date" id="today"></div></div><h1>今日も、ちょっとずつ。</h1><p>勉強した分だけ、できることが増えていく。</p></header>
+<main>
+<section class="page active" id="home">
+ <div class="section-title">今日のまとめ</div>
+ <div class="stats"><div class="stat"><b id="todayMinutes">0分</b><small>今日の勉強</small></div><div class="stat"><b id="totalMinutes">0分</b><small>今までの勉強</small></div><div class="stat"><b id="giftCount">0個</b><small>ごほうび</small></div></div>
+ <div class="card"><div class="row between"><div><div class="muted">次のごほうびまで</div><div class="big" id="nextReward">25分</div></div><span class="pill">25分で1回</span></div><div class="progress" style="margin:12px 0 7px"><div id="rewardProgress"></div></div><div class="muted">タイマーを使って勉強しよう！</div><button class="primary full" style="margin-top:14px" onclick="showPage('timer')">勉強をはじめる →</button></div>
+ <div class="section-title">今日やること</div><div class="card" id="homeTasks"></div>
+ <div class="section-title">今日のひとこと</div><div class="card"><b>完ぺきじゃなくても大丈夫。</b><p class="muted">5分でも、昨日より一歩進めたらすごい！</p></div>
+</section>
+<section class="page" id="tasks"><div class="section-title">やることリスト</div><div class="card"><div class="row"><input id="taskInput" type="text" placeholder="例：算数のプリント"><button class="primary" onclick="addTask()">追加</button></div><div id="taskList" style="margin-top:10px"></div></div><p class="tiny">チェックを入れると、終わったことがわかるよ。</p></section>
+<section class="page" id="timer"><div class="section-title">勉強タイマー</div><div class="card timer-face"><div class="muted">集中した時間を記録しよう</div><div class="timer-ring"><div><div class="timer-time" id="timerDisplay">25:00</div><div class="muted" id="timerStatus">準備OK</div></div></div><div class="row" style="justify-content:center;flex-wrap:wrap;margin-bottom:15px"><button class="secondary smallbtn" onclick="setDuration(15)">15分</button><button class="secondary smallbtn" onclick="setDuration(25)">25分</button><button class="secondary smallbtn" onclick="setDuration(45)">45分</button></div><div class="row"><button class="primary full" id="startBtn" onclick="toggleTimer()">スタート</button><button class="secondary" onclick="resetTimer()">リセット</button></div><p class="tiny" style="margin-top:14px">タイマーが最後まで終わると、勉強時間に追加されるよ。</p></div><div class="card"><b>ごほうびルール 🎁</b><p class="muted">勉強時間が合計25分たまるごとに、ごほうびを1回もらえるよ。</p></div></section>
+<section class="page" id="quiz"><div class="section-title">小学6年生クイズ</div><div class="card"><div class="row between"><span class="pill" id="quizSubject">算数</span><span class="muted" id="quizCount">1 / 10</span></div><div class="progress" style="margin:12px 0"><div id="quizProgress"></div></div><div class="question" id="questionText"></div><div id="options" style="margin-top:12px"></div><div id="quizFeedback"></div><button class="primary full" id="nextQuestion" style="display:none;margin-top:12px" onclick="nextQuiz()">次の問題 →</button><div id="quizResult" style="display:none;text-align:center"></div><button class="secondary full" id="restartQuiz" style="display:none;margin-top:10px" onclick="startQuiz()">もう一度クイズ</button></div><p class="tiny">算数・国語・理科・社会の問題だよ。</p></section>
+<section class="page" id="rewards"><div class="section-title">ごほうびボックス</div><div class="card reward-box"><div class="gift">🎁</div><h2>がんばった自分にごほうび！</h2><p class="muted">勉強25分ごとに1回ひけるよ。</p><div class="big" id="availableGifts">0回</div><button class="primary full" id="openGift" onclick="openReward()">ごほうびを開ける</button><div id="giftMessage" style="margin-top:14px;font-weight:800"></div></div><div class="section-title">ごほうびの記録</div><div class="card" id="rewardHistory"><div class="empty">まだ記録はないよ。勉強してごほうびをゲットしよう！</div></div><p class="tiny">ごほうびはアプリの中で楽しむミニごほうびだよ。</p></section>
+</main>
+<nav class="tabs"><button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>ホーム</button><button data-page="tasks" onclick="showPage('tasks')"><span>☑</span>やること</button><button data-page="timer" onclick="showPage('timer')"><span>◷</span>タイマー</button><button data-page="quiz" onclick="showPage('quiz')"><span>✎</span>クイズ</button><button data-page="rewards" onclick="showPage('rewards')"><span>🎁</span>ごほうび</button></nav>
+<script>
+const $=id=>document.getElementById(id);
+const todayKey=new Date().toLocaleDateString('sv-SE');
+const defaultState={tasks:[{id:1,text:'算数を10分勉強する',done:false},{id:2,text:'漢字を5個練習する',done:false}],totalMinutes:0,daily:{},giftCount:0,rewardHistory:[],lastRewardMinute:0};
+let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('study-note-state')||'{}')};}catch(e){state={...defaultState};}
+state.tasks=state.tasks||[];state.daily=state.daily||{};state.rewardHistory=state.rewardHistory||[];
+let duration=25,remaining=1500,interval=null,running=false,quiz=[],qIndex=0,score=0,answered=false;
+const questions=[
+{subject:'算数',q:'半径が5cmの円の面積は何cm²？（円周率は3.14）',o:['31.4','78.5','15.7','25'],a:1,e:'円の面積は「半径×半径×円周率」。5×5×3.14＝78.5cm²だよ。'},
+{subject:'算数',q:'比 2：3 と同じ比はどれ？',o:['4：5','6：8','4：6','3：2'],a:2,e:'2と3をどちらも2倍すると4：6になるよ。'},
+{subject:'算数',q:'1.2 ÷ 0.3 の答えは？',o:['0.4','4','40','3.6'],a:1,e:'割る数と割られる数を10倍すると、12÷3＝4だよ。'},
+{subject:'国語',q:'「努力」の意味にいちばん近いものは？',o:['何もしないこと','目標に向かってがんばること','急いで走ること','人にまかせること'],a:1,e:'努力は、目標をかなえるために力を尽くすことだよ。'},
+{subject:'国語',q:'「美しい」の品詞はどれ？',o:['名詞','動詞','形容詞','副詞'],a:2,e:'「美しい」は物事の様子や性質を表す形容詞だよ。'},
+{subject:'理科',q:'植物が日光を使って養分をつくるはたらきは？',o:['呼吸','蒸散','受粉','光合成'],a:3,e:'植物は日光を使い、水や二酸化炭素から養分をつくるよ。これが光合成。'},
+{subject:'理科',q:'月が光って見える主な理由は？',o:['月が自分で光るから','太陽の光を反射するから','地球が光るから','星の光を集めるから'],a:1,e:'月は自分で光を出しているのではなく、太陽の光を反射しているよ。'},
+{subject:'社会',q:'日本国憲法の三つの原則に含まれるのはどれ？',o:['国民主権','武士の支配','身分制度','鎖国'],a:0,e:'三つの原則は国民主権、基本的人権の尊重、平和主義だよ。'},
+{subject:'社会',q:'日本の国会は何をするところ？',o:['法律をつくる','天気を予報する','裁判を行う','都道府県の知事を決める'],a:0,e:'国会は国の法律や予算などを話し合って決める機関だよ。'},
+{subject:'社会',q:'日本でいちばん面積が大きい都道府県は？',o:['長野県','北海道','岩手県','新潟県'],a:1,e:'北海道が日本で最も面積の大きい都道府県だよ。'}
+];
+function save(){localStorage.setItem('study-note-state',JSON.stringify(state));renderAll()}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));if(p==='quiz'&&!quiz.length)startQuiz();window.scrollTo(0,0)}
+function renderAll(){const today=state.daily[todayKey]||0;$('todayMinutes').textContent=today+'分';$('totalMinutes').textContent=state.totalMinutes+'分';$('giftCount').textContent=state.giftCount+'個';const rem=state.totalMinutes%25;$('nextReward').textContent=(25-rem)+'分';$('rewardProgress').style.width=(rem/25*100)+'%';$('availableGifts').textContent=state.giftCount+'回';$('openGift').disabled=state.giftCount<=0;$('openGift').style.opacity=state.giftCount<=0?'.5':'1';renderTasks();renderHistory()}
+function renderTasks(){const html=state.tasks.length?state.tasks.map(t=>`<div class="task"><input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})"><div style="flex:1" class="${t.done?'done':''}">${esc(t.text)}</div><button class="danger smallbtn" onclick="deleteTask(${t.id})">消す</button></div>`).join(''):'<div class="empty">やることを追加してね。</div>';$('taskList').innerHTML=html;$('homeTasks').innerHTML=state.tasks.slice(0,3).map(t=>`<div class="task"><span>${t.done?'☑':'○'}</span><div class="${t.done?'done':''}">${esc(t.text)}</div></div>`).join('')||'<div class="empty">やることを追加してね。</div>'}
+function renderHistory(){$('rewardHistory').innerHTML=state.rewardHistory.length?state.rewardHistory.slice().reverse().map(x=>`<div class="history-item">🎁 ${esc(x.prize)} <span class="muted">・${esc(x.date)}</span></div>`).join(''):'<div class="empty">まだ記録はないよ。勉強してごほうびをゲットしよう！</div>'}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addTask(){const v=$('taskInput').value.trim();if(!v)return;state.tasks.push({id:Date.now(),text:v,done:false});$('taskInput').value='';save()}
+function toggleTask(id){const t=state.tasks.find(x=>x.id===id);if(t)t.done=!t.done;save()}
+function deleteTask(id){state.tasks=state.tasks.filter(x=>x.id!==id);save()}
+function setDuration(m){if(running)return;duration=m;remaining=m*60;updateTimer();$('timerStatus').textContent='準備OK'}
+function updateTimer(){$('timerDisplay').textContent=String(Math.floor(remaining/60)).padStart(2,'0')+':'+String(remaining%60).padStart(2,'0')}
+function toggleTimer(){if(running){clearInterval(interval);interval=null;running=false;$('startBtn').textContent='つづける';$('timerStatus').textContent='一時停止中';return}running=true;$('startBtn').textContent='一時停止';$('timerStatus').textContent='集中中…';interval=setInterval(()=>{remaining--;updateTimer();if(remaining<=0){clearInterval(interval);interval=null;running=false;state.totalMinutes+=duration;state.daily[todayKey]=(state.daily[todayKey]||0)+duration;const before=Math.floor((state.totalMinutes-duration)/25),after=Math.floor(state.totalMinutes/25);state.giftCount+=Math.max(0,after-before);save();$('startBtn').textContent='もう一度スタート';$('timerStatus').textContent='おつかれさま！';alert('おつかれさま！ '+duration+'分を記録したよ。ごほうびもチェックしてね 🎉');}} ,1000)}
+function resetTimer(){clearInterval(interval);interval=null;running=false;remaining=duration*60;updateTimer();$('startBtn').textContent='スタート';$('timerStatus').textContent='準備OK'}
+function startQuiz(){quiz=questions.slice().sort(()=>Math.random()-.5);qIndex=0;score=0;answered=false;$('quizResult').style.display='none';$('restartQuiz').style.display='none';$('questionText').style.display='block';$('options').style.display='block';$('quizFeedback').innerHTML='';$('nextQuestion').style.display='none';renderQuestion()}
+function renderQuestion(){answered=false;const q=quiz[qIndex];$('quizSubject').textContent=q.subject;$('quizCount').textContent=(qIndex+1)+' / '+quiz.length;$('quizProgress').style.width=(qIndex/quiz.length*100)+'%';$('questionText').textContent=q.q;$('options').innerHTML=q.o.map((o,i)=>`<button class="option" onclick="answerQuiz(${i})">${['A','B','C','D'][i]}. ${esc(o)}</button>`).join('');$('quizFeedback').innerHTML='';$('nextQuestion').style.display='none'}
+function answerQuiz(i){if(answered)return;answered=true;const q=quiz[qIndex];if(i===q.a)score++;document.querySelectorAll('.option').forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('correct');else if(j===i)b.classList.add('wrong')});$('quizFeedback').innerHTML=`<div class="feedback">${i===q.a?'正解！ 🎉':'おしい！'}<br>${esc(q.e)}</div>`;$('nextQuestion').textContent=qIndex===quiz.length-1?'結果を見る':'次の問題 →';$('nextQuestion').style.display='block'}
+function nextQuiz(){qIndex++;if(qIndex>=quiz.length){$('questionText').style.display='none';$('options').style.display='none';$('quizFeedback').innerHTML='';$('nextQuestion').style.display='none';$('quizProgress').style.width='100%';$('quizResult').style.display='block';$('quizResult').innerHTML=`<div style="font-size:48px;margin:12px">🏆</div><div class="big">${score} / ${quiz.length} 問正解</div><p class="muted">挑戦してえらい！また練習しよう。</p>`;$('restartQuiz').style.display='block';return}renderQuestion()}
+const prizes=['好きな曲を1曲聴く','好きな絵を描く時間','5分ゆっくり休憩','好きな本を読む時間','好きなおやつを楽しむ（おうちのルールで）','ゲームや動画を少し楽しむ（時間のルールで）','自分に「よくがんばった！」と言う'];
+function openReward(){if(state.giftCount<=0)return;state.giftCount--;const prize=prizes[Math.floor(Math.random()*prizes.length)];state.rewardHistory.push({prize,date:new Date().toLocaleDateString('ja-JP')});$('giftMessage').textContent='🎉 '+prize+'！';save()}
+$('today').textContent=new Date().toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'});
+renderAll();updateTimer();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+</script>
+</body></html>

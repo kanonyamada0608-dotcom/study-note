@@ -1,0 +1,15 @@
+{
+  "name": "STUDY NOTE - 勉強アプリ",
+  "short_name": "STUDY NOTE",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5fb",
+  "theme_color": "#45466f",
+  "description": "勉強時間、小学6年生クイズ、ごほうびをまとめた勉強アプリ",
+  "icons": [
+    {"src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
